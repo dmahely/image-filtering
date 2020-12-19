@@ -16,7 +16,6 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // GET /filteredimage?image_url={{URL}}
   // endpoint to filter an image from a public url.
   // IT SHOULD
-  //    1
   //    1. validate the image_url query
   //    2. call filterImageFromURL(image_url) to filter the image
   //    3. send the resulting file in the response
@@ -26,16 +25,16 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // RETURNS
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
-  app.get( "/filteredimage", async ( req, res ) => {
+  app.get( "/filteredimage", async ( req: express.Request, res: express.Response ) => {
     const { image_url } = req.query;
     if (!image_url) {
       res.status(400).send('Image URL is required.');
     }
-    const filteredImagePath = await filterImageFromURL(image_url);
+    const filteredImagePath: string = await filterImageFromURL(image_url);
 
-    res.status(200).sendFile(filteredImagePath, async (error) => {
+    res.status(200).sendFile(filteredImagePath, async (error: string) => {
       if (error) {
-        console.log(error);
+        throw new Error(error)
       }
 
       return await deleteLocalFiles([filteredImagePath]);
